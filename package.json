@@ -1,0 +1,61 @@
+{
+  "name": "capacitor-sdk-amplitude",
+  "version": "0.1.0",
+  "description": "Amplitude Analytics plugin for Capacitor",
+  "keywords": [
+    "capacitor",
+    "capacitor-plugin",
+    "amplitude",
+    "analytics"
+  ],
+  "homepage": "https://github.com/dsteinel/capacitor-amplitude-sdk",
+  "bugs": {
+    "url": "https://github.com/dsteinel/capacitor-amplitude-sdk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsteinel/capacitor-amplitude-sdk.git"
+  },
+  "license": "MIT",
+  "author": "Dimitri Steinel",
+  "type": "commonjs",
+  "main": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "directories": {
+    "example": "example"
+  },
+  "files": [
+    "dist/",
+    "ios/",
+    "android/",
+    "CapacitorSdkAmplitude.podspec",
+    "Package.swift"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf ./dist",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "publish:npm": "npm version patch && npm publish && git push origin --tags"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
+    "@capacitor/ios": "^8.3.1",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@capacitor/core": "^8.0.0"
+  },
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    },
+    "android": {
+      "src": "android"
+    }
+  }
+}

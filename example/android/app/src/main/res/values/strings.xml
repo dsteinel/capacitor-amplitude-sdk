@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Amplitude Example</string>
+    <string name="title_activity_main">Amplitude Example</string>
+    <string name="package_name">de.bsdex.capacitor.amplitude.example</string>
+    <string name="custom_url_scheme">de.bsdex.capacitor.amplitude.example</string>
+</resources>

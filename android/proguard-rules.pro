@@ -1,0 +1,2 @@
+-keep class com.amplitude.** { *; }
+-keepnames class com.amplitude.** { *; }
