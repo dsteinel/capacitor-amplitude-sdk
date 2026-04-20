@@ -2,7 +2,7 @@
   <img src="./logo.svg" alt="capacitor-sdk-amplitude" height="130">
 </p>
 
-<h1 align="center">capacitor-sdk-amplitude</h1>
+<h1 align="center">Capacitor Amplitude SDK</h1>
 
 <p align="center">
   <img src="https://img.shields.io/npm/v/capacitor-sdk-amplitude" alt="npm version">
@@ -50,25 +50,25 @@ npx cap sync
 ## Usage
 
 ```ts
-import { AmplitudeAnalytics } from 'capacitor-sdk-amplitude';
+import { AmplitudeAnalytics } from 'capacitor-sdk-amplitude'
 
 // 1. Initialize once on app start
 await AmplitudeAnalytics.init({
   apiKey: 'YOUR_AMPLITUDE_API_KEY',
   serverZone: 'EU', // or 'US' (default)
-});
+})
 
 // 2. Identify the user after login
-await AmplitudeAnalytics.setUserId({ userId: 'user-uuid' });
+await AmplitudeAnalytics.setUserId({ userId: 'user-uuid' })
 
 // 3. Track events
 await AmplitudeAnalytics.track({
   eventType: 'button_tapped',
   eventProperties: { screen: 'home' },
-});
+})
 
 // 4. Reset on logout
-await AmplitudeAnalytics.reset();
+await AmplitudeAnalytics.reset()
 ```
 
 ---
