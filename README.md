@@ -1,86 +1,81 @@
-# capacitor-sdk-amplitude
+<p align="center">
+  <img src="./logo.svg" alt="capacitor-sdk-amplitude" height="130">
+</p>
 
-Amplitude Analytics Capacitor plugin for iOS and Android. Wraps the native Amplitude Swift SDK (iOS) and Amplitude Kotlin/Android SDK (Android) behind a unified Capacitor bridge.
+<h1 align="center">capacitor-sdk-amplitude</h1>
 
-**Platform support:**
+<p align="center">
+  <img src="https://img.shields.io/npm/v/capacitor-sdk-amplitude" alt="npm version">
+  <img src="https://img.shields.io/npm/l/capacitor-sdk-amplitude" alt="license">
+  <img src="https://img.shields.io/badge/capacitor-8%2B-blue" alt="capacitor">
+</p>
 
-- iOS 16+
-- Android API 24+
-- Web: intentionally not implemented — use `@amplitude/analytics-browser` directly in the app
+<p align="center">
+  Amplitude Analytics plugin for Capacitor — wraps the native iOS and Android SDKs behind a unified TypeScript bridge.
+</p>
+
+<div align="center">
+  <a href="#install">Install</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="#usage">Usage</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="#api-reference">API</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://github.com/dsteinel/capacitor-amplitude-sdk/issues">Issues</a>
+</div>
 
 ---
 
-## Installation
+## Platform support
+
+- iOS 16+
+- Android API 24+
+- Web: not implemented — use [`@amplitude/analytics-browser`](https://www.npmjs.com/package/@amplitude/analytics-browser) directly
+
+---
+
+## Install
 
 ```bash
 npm install capacitor-sdk-amplitude
 npx cap sync
 ```
 
----
+**iOS** — `AmplitudeSwift ~> 1.0` is pulled in automatically via CocoaPods or Swift Package Manager. No extra steps.
 
-## iOS Setup
-
-The `Package.swift` file at the root of this plugin pulls in `AmplitudeSwift` via Swift Package Manager automatically when Capacitor resolves the plugin.
-
-If you use CocoaPods instead, the `CapacitorSdkAmplitude.podspec` declares the dependency on `AmplitudeSwift ~> 1.0`.
-
-**Requirements:** iOS deployment target 16.0 or higher. Ensure your Xcode project's minimum deployment target is set accordingly.
+**Android** — `com.amplitude:analytics-android:1.+` is resolved from `mavenCentral()` automatically on sync. Ensure your app's `AndroidManifest.xml` includes the INTERNET permission (Capacitor projects include this by default).
 
 ---
 
-## Android Setup
+## Usage
 
-The Amplitude Kotlin SDK (`com.amplitude:analytics-android:1.+`) is declared in `android/build.gradle` and resolved from `mavenCentral()` automatically during the Gradle build.
+```ts
+import { AmplitudeAnalytics } from 'capacitor-sdk-amplitude';
 
-The app's `AndroidManifest.xml` must include the INTERNET permission (Capacitor projects include this by default):
+// 1. Initialize once on app start
+await AmplitudeAnalytics.init({
+  apiKey: 'YOUR_AMPLITUDE_API_KEY',
+  serverZone: 'EU', // or 'US' (default)
+});
 
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
+// 2. Identify the user after login
+await AmplitudeAnalytics.setUserId({ userId: 'user-uuid' });
+
+// 3. Track events
+await AmplitudeAnalytics.track({
+  eventType: 'button_tapped',
+  eventProperties: { screen: 'home' },
+});
+
+// 4. Reset on logout
+await AmplitudeAnalytics.reset();
 ```
 
 ---
 
-## API Reference
+## Cross-platform Usage
 
-### `init(options: InitOptions): Promise<void>`
-
-Initialize the Amplitude SDK. Must be called before any other method. Subsequent calls are no-ops (safe to call multiple times).
-
-| Option       | Type                                              | Required | Description                              |
-| ------------ | ------------------------------------------------- | -------- | ---------------------------------------- |
-| `apiKey`     | `string`                                          | Yes      | Your Amplitude project API key           |
-| `serverZone` | `'EU' \| 'US'`                                    | No       | Data residency zone. Defaults to `'US'`  |
-| `logLevel`   | `'OFF' \| 'ERROR' \| 'WARN' \| 'INFO' \| 'DEBUG'` | No       | SDK log verbosity. Defaults to `'ERROR'` |
-
-### `setUserId(options: SetUserIdOptions): Promise<void>`
-
-Associate a user ID with all subsequent events. Pass `{ userId: null }` to clear the user (e.g. on logout).
-
-| Option   | Type             | Required | Description                        |
-| -------- | ---------------- | -------- | ---------------------------------- |
-| `userId` | `string \| null` | Yes      | User identifier or `null` to clear |
-
-### `track(options: TrackOptions): Promise<void>`
-
-Track a custom event with optional properties.
-
-| Option            | Type                      | Required | Description                                |
-| ----------------- | ------------------------- | -------- | ------------------------------------------ |
-| `eventType`       | `string`                  | Yes      | The event name                             |
-| `eventProperties` | `Record<string, unknown>` | No       | Key-value properties attached to the event |
-
-### `reset(): Promise<void>`
-
-Reset the SDK: clears the user ID and generates a new device ID. Call this on logout to prevent events from being attributed to the previous user.
-
----
-
-## Usage in bsdex-retail-ionic
-
-### `src/shared/helpers/amplitude.ts`
-
-The helper module uses an `isApp` guard to route calls to this plugin on native platforms and to `@amplitude/analytics-browser` on web:
+Use `Capacitor.isNativePlatform()` to route calls to this plugin on native and to `@amplitude/analytics-browser` on web:
 
 ```typescript
 import { Capacitor } from '@capacitor/core'
@@ -125,71 +120,83 @@ export async function resetAmplitude() {
 }
 ```
 
-### `src/shared/hooks/integration.ts`
+---
 
-The `useAmplitude` hook wires up init and user identification:
+## API Reference
 
-```typescript
-import { useEffect } from 'react'
-import { useAppSelector } from '@hooks/storeHooks'
-import { selectUser } from '@features/user/userSlice'
-import { initAmplitude, setUserId } from '@helpers/amplitude'
+### `init(options: InitOptions): Promise<void>`
 
-export function useAmplitude() {
-  const user = useAppSelector(selectUser)
+Initialize the Amplitude SDK. Must be called before any other method. Subsequent calls are no-ops.
 
-  useEffect(() => {
-    initAmplitude(import.meta.env.VITE_AMPLITUDE_API_KEY)
-  }, [])
+| Option       | Type                                              | Required | Description                              |
+| ------------ | ------------------------------------------------- | -------- | ---------------------------------------- |
+| `apiKey`     | `string`                                          | Yes      | Your Amplitude project API key           |
+| `serverZone` | `'EU' \| 'US'`                                    | No       | Data residency zone. Defaults to `'US'`  |
+| `logLevel`   | `'OFF' \| 'ERROR' \| 'WARN' \| 'INFO' \| 'DEBUG'` | No       | SDK log verbosity. Defaults to `'ERROR'` |
 
-  useEffect(() => {
-    setUserId(user?.id ?? null)
-  }, [user?.id])
-}
-```
+### `setUserId(options: SetUserIdOptions): Promise<void>`
+
+Associate a user ID with all subsequent events. Pass `{ userId: null }` to clear (e.g. on logout).
+
+| Option   | Type             | Required | Description                        |
+| -------- | ---------------- | -------- | ---------------------------------- |
+| `userId` | `string \| null` | Yes      | User identifier or `null` to clear |
+
+### `track(options: TrackOptions): Promise<void>`
+
+Track a custom event with optional properties.
+
+| Option            | Type                      | Required | Description                                |
+| ----------------- | ------------------------- | -------- | ------------------------------------------ |
+| `eventType`       | `string`                  | Yes      | The event name                             |
+| `eventProperties` | `Record<string, unknown>` | No       | Key-value properties attached to the event |
+
+### `reset(): Promise<void>`
+
+Reset the SDK: clears the user ID and generates a new device ID. Call on logout to prevent events from being attributed to the previous user.
 
 ---
 
 ## EU Data Residency
 
-Pass `serverZone: 'EU'` to `init()` to route all event data to Amplitude's EU servers. This is required for GDPR-compliant deployments. The BSDEX app always uses the EU zone.
+Pass `serverZone: 'EU'` to `init()` to route all event data to Amplitude's EU servers. Required for GDPR-compliant deployments.
 
 ---
 
 ## Reset on Logout
 
-Call `reset()` (or `resetAmplitude()` via the helper) in the logout flow, after clearing auth tokens. This ensures:
+Call `reset()` in the logout flow after clearing auth tokens. This ensures:
 
 1. The user ID is cleared so future anonymous events are not attributed to the previous user.
-2. A new device ID is generated, breaking the session continuity.
+2. A new device ID is generated, breaking session continuity.
 
 ---
 
 ## Development
-
-### Build the plugin
 
 ```bash
 npm install
 npm run build
 ```
 
-The TypeScript source in `src/` is compiled to `dist/esm/`.
-
 ### Run the example app
 
 ```bash
 cd example
 npm install
-npm run start         # Vite web dev server
-npm run start:ios     # iOS simulator (builds + syncs automatically)
-npm run start:android # Android emulator (builds + syncs automatically)
+npm run start           # Vite web dev server
+npm run start:ios       # iOS simulator
+npm run start:android   # Android emulator
 ```
-
-> **Note:** If you run `npx cap sync` manually, you must run `npm run build` first to generate the `dist/` directory. The `start:ios` and `start:android` scripts handle this automatically.
 
 ---
 
 ## Note on Web
 
-The web implementation intentionally throws `unimplemented()` for all methods. This is by design: `bsdex-retail-ionic` already integrates `@amplitude/analytics-browser` for the web/PWA platform. Routing web calls through this plugin would cause double-initialisation and duplicate events. The `isApp` guard in `src/shared/helpers/amplitude.ts` ensures the correct SDK is used on each platform.
+The web implementation intentionally throws `unimplemented()` for all methods. Use `@amplitude/analytics-browser` for web/PWA and guard calls with `Capacitor.isNativePlatform()` as shown above.
+
+---
+
+## License
+
+MIT
