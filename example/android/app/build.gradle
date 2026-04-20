@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "de.bsdex.capacitor.amplitude.example"
+    namespace = "com.dsteinel.capacitor.amplitude.example"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "de.bsdex.capacitor.amplitude.example"
+        applicationId "com.dsteinel.capacitor.amplitude.example"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

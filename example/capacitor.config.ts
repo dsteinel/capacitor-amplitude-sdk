@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'de.bsdex.capacitor.amplitude.example',
+  appId: 'com.dsteinel.capacitor.amplitude.example',
   appName: 'Amplitude Example',
   webDir: 'dist',
 };

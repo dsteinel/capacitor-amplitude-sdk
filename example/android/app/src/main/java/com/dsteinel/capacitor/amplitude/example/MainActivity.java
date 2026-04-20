@@ -1,4 +1,4 @@
-package de.bsdex.capacitor.amplitude.example;
+package com.dsteinel.capacitor.amplitude.example;
 
 import com.getcapacitor.BridgeActivity;
 

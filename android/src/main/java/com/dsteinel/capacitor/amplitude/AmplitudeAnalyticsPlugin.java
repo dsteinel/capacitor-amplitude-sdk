@@ -1,4 +1,4 @@
-package de.bsdex.capacitor.amplitude;
+package com.dsteinel.capacitor.amplitude;
 
 import com.amplitude.android.Amplitude;
 import com.amplitude.android.Configuration;
