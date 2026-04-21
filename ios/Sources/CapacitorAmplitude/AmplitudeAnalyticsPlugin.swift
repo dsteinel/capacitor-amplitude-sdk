@@ -32,11 +32,11 @@ public class AmplitudeAnalyticsPlugin: CAPPlugin, CAPBridgedPlugin {
         let logLevelString = call.getString("logLevel") ?? "ERROR"
         let logLevel: LogLevelEnum
         switch logLevelString {
-        case "OFF": logLevel = .OFF
-        case "WARN": logLevel = .WARN
-        case "INFO": logLevel = .INFO
-        case "DEBUG": logLevel = .DEBUG
-        default: logLevel = .ERROR
+        case "OFF": logLevel = .off
+        case "WARN": logLevel = .warn
+        case "INFO": logLevel = .log
+        case "DEBUG": logLevel = .debug
+        default: logLevel = .error
         }
 
         let config = Configuration(
